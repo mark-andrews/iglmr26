@@ -6,6 +6,10 @@ In this two day course, we provide a comprehensive practical and theoretical int
 
 Instructions on how to install the software is [here](software.md).
 
+## Notes
+
+Notes and guides to accompany this course can be found [here](https://courses.mjandrews.org/iglmr/).
+
 # Course programme 
 
 ## Day 1 
