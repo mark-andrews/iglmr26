@@ -37,5 +37,54 @@ anova(M_2, M_3)
 logLik(M_2)
 logLik(M_3)
 
+# Binary logistic regression ----------------------------------------------
+
+
 affairs_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/iglmr26/refs/heads/main/data/affairs.csv")
 
+affairs_df <- mutate(affairs_df, had_affair = affairs > 0)
+
+# log odds, logits ...
+
+p <- c(0.1, 0.2, 0.3, 0.5, 0.8, 0.95)
+# odds = p / (1-p)
+odds <- p / (1-p)
+
+# logit: log of the odds
+log(odds)
+
+p <- c(0.1, 0.2, 0.5, 0.8, 0.9)
+p/(1-p)
+phi <- log(p/(1-p))
+
+1/(1 + exp(-phi))
+ilogit <- function(phi) 1/(1 + exp(-phi))
+ilogit(phi)
+plogis(phi) # cumulative distribution function for the logistic distribution
+
+M_6 <- glm(had_affair ~ yearsmarried, 
+           family = binomial(link = 'logit'),
+           data = affairs_df)
+
+summary(M_6)
+
+exp(coef(M_6)[2]) # odds ratio for predictor "yearsmarried"
+
+confint(M_6)
+# confidence interval on odds ratio
+exp(confint(M_6, parm='yearsmarried'))
+
+
+# Predictions in logistic regression --------------------------------------
+
+affairs_df2 <- tibble(yearsmarried = c(1, 2, 5, 10, 20))
+
+b <- coef(M_6)
+
+M_6_pred <- mutate(
+  affairs_df2, 
+  predicted_logodds = b[1] + b[2] * yearsmarried,
+  predicted_prob = plogis(predicted_logodds))
+
+ggplot(M_6_pred, aes(yearsmarried, predicted_logodds)) + geom_point() + geom_line()
+       
