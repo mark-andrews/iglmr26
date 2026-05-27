@@ -31,3 +31,11 @@ confint(M_3)
 M_5 <- lm(weight ~ 1, data = weight_df)
 anova(M_5, M_3) # "anova" = nested model comparison
 
+anova(M_2, M_3)
+
+# log likelihood
+logLik(M_2)
+logLik(M_3)
+
+affairs_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/iglmr26/refs/heads/main/data/affairs.csv")
+
