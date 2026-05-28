@@ -116,3 +116,60 @@ anova(M_7, M_6)
 M_8 <- glm(had_affair ~ gender + age + yearsmarried + children + religiousness + education + occupation + rating,
            family = binomial(link = 'logit'),
            data = affairs_df)
+
+confint(M_8)
+
+exp(coef(M_8))
+exp(confint(M_8)) # confidence intervals for the odds ratios
+
+deviance(M_8)
+-2 * logLik(M_8)
+
+anova(M_7, M_8)
+
+M_9 <- glm(had_affair ~ age + yearsmarried + religiousness + rating,
+           family = binomial(link = 'logit'),
+           data = affairs_df)
+anova(M_9, M_8)
+
+# Ordinal (logistic) regression -------------------------------------------
+
+library(pscl) # to load the `admit` dataset
+admit_df <- as_tibble(admit)
+
+library(MASS)
+
+M_10 <- polr(score ~ gre.quant, data = admit)
+summary(M_10)
+
+admit_new <- tibble(gre.quant = seq(300, 800, by = 100))
+add_predictions(admit_new, M_10, type = 'prob')
+
+b <- coef(M_10)
+zeta <- M_10$zeta
+
+centre <- b * 600
+plogis(zeta, location = centre)
+
+
+
+M_11 <- polr(score ~ gre.quant + gre.verbal + ap + pt + female, data = admit)
+summary(M_11)
+
+M_12 <- polr(score ~ gre.quant + gre.verbal + ap + female, data = admit)
+anova(M_12, M_11)
+
+
+# Categorical logistic regression -----------------------------------------
+library(nnet)
+M_13 <- multinom(score ~ gre.quant, data = admit_df)
+summary(M_13)
+coef(M_13)
+
+add_predictions(admit_new, M_13, type = 'prob')
+
+log_prob_ratios <- coef(M_13) %*% c(1, 600)
+log_prob_ratios <- c(0, log_prob_ratios)
+
+# softmax 
+exp(log_prob_ratios) / sum(exp(log_prob_ratios))
