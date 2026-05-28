@@ -113,4 +113,32 @@ anova(M_20, M_19)
 
 smoking_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/iglmr26/refs/heads/main/data/smoking.csv")
 
+ggplot(smoking_df, aes(cigs)) + geom_bar()
+ggplot(doctor_df, aes(doctorco)) + geom_bar()
+ggplot(biochem_df, aes(publications)) + geom_bar()
 
+M_21 <- glm(cigs ~ educ, family = poisson(link = 'log'), data = smoking_df)
+summary(M_21)
+
+# M_22 <- glm.nb(cigs ~ educ, data = smoking_df)
+library(pscl)
+M_22 <- zeroinfl(cigs ~ educ, data = smoking_df) # zero inflated Poisson
+M_23 <- zeroinfl(cigs ~ educ, dist = "negbin", data= smoking_df) # zero inflated Neg Bin
+summary(M_22)
+summary(M_23)
+
+smoking_new <- tibble(educ = c(1, 5, 10, 15, 20))
+# prediction of the latent variable according to the logistic regression
+add_predictions(smoking_new, M_22, type = 'zero')
+
+# prediction of the mean of the count according to Poisson regression
+add_predictions(smoking_new, M_22, type = 'count')
+# average over both groups
+add_predictions(smoking_new, M_22, type = 'response')
+
+
+M_24 <- hurdle(cigs ~ educ, data = smoking_df) # hurdle Poisson
+summary(M_24)
+
+add_predictions(smoking_new, M_24, type = 'zero') # probability of clearing the hurdle
+add_predictions(smoking_new, M_24, type = 'count') # mean of Poisson distribution for those over hurdle
