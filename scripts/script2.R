@@ -84,3 +84,33 @@ data_df <- tibble(x = seq(0, 20))
 data_df <- mutate(data_df, pois = dpois(x, lambda = 3.75))
 
 ggplot(data_df, aes(x,pois)) + geom_point() + geom_line()
+
+data_df <- mutate(data_df, pois = dpois(x, lambda = 9.75))
+
+ggplot(data_df, aes(x,pois)) + geom_point() + geom_line()
+
+
+data_df <- mutate(data_df, negbin = dnbinom(x, mu = 9.75, size = 5))
+
+ggplot(data_df, aes(x,negbin)) + geom_point() + geom_line()
+
+data_df <- mutate(data_df, negbin = dnbinom(x, mu = 9.75, size = 20))
+ggplot(data_df, aes(x,negbin)) + geom_point() + geom_line()
+
+M_19 <- glm.nb(publications ~ gender + married + children + prestige + mentor,
+               data = biochem_df)
+summary(M_19)
+
+M_20 <- glm.nb(publications ~ gender + children + mentor,
+               data = biochem_df)
+
+anova(M_20, M_19)
+
+
+
+# Excess zero modelling ---------------------------------------------------
+
+
+smoking_df <- read_csv("https://raw.githubusercontent.com/mark-andrews/iglmr26/refs/heads/main/data/smoking.csv")
+
+
