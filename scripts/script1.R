@@ -112,3 +112,7 @@ deviance(M_7)
 deviance(M_7) - deviance(M_6)
 
 anova(M_7, M_6)
+
+M_8 <- glm(had_affair ~ gender + age + yearsmarried + children + religiousness + education + occupation + rating,
+           family = binomial(link = 'logit'),
+           data = affairs_df)
