@@ -87,4 +87,28 @@ M_6_pred <- mutate(
   predicted_prob = plogis(predicted_logodds))
 
 ggplot(M_6_pred, aes(yearsmarried, predicted_logodds)) + geom_point() + geom_line()
+ggplot(M_6_pred, aes(yearsmarried, predicted_prob)) + geom_point() + geom_line()
        
+# automatic prediction using `predict` and `add_predictions`
+predict(M_6, newdata = affairs_df2)
+
+library(modelr) # to get add_predictions
+add_predictions(affairs_df2, M_6) # predicted log odds
+add_predictions(affairs_df2, M_6, type = 'response') # predicted probabilities
+ 
+summary(M_6)
+
+logLik(M_6)
+logLik(M_6) * -2
+deviance(M_6)
+
+# the nullest of the nulls ...
+M_7 <- glm(had_affair ~ 1, 
+           family = binomial(link = 'logit'),
+           data = affairs_df)
+logLik(M_7) * -2
+deviance(M_7)
+
+deviance(M_7) - deviance(M_6)
+
+anova(M_7, M_6)
